@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-const InvoiceForm = ({ onSave, onCancel }) => {
+const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
   const [formState, setFormState] = useState({
     invoiceDate: '',
     billTo: '',
     paymentDueDate: '',
     status: '',
-    lineItem: [
+    lineItems: [
       {
         ratePerHour: '',
         expenses: '',
@@ -21,6 +21,12 @@ const InvoiceForm = ({ onSave, onCancel }) => {
     setFormState({ ...formState, invoiceDate: today });
   }, []);
 
+  useEffect(() => {
+    if (selectedInvoice) {
+      setFormState(selectedInvoice);
+    }
+  }, [selectedInvoice]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState({ ...formState, [name]: value });
@@ -28,12 +34,12 @@ const InvoiceForm = ({ onSave, onCancel }) => {
 
   const handleLineItemChange = (e, index) => {
     const { name, value } = e.target;
-    const updatedLineItems = [...formState.lineItem];
+    const updatedLineItems = [...formState.lineItems];
     updatedLineItems[index] = {
       ...updatedLineItems[index],
       [name]: value,
     };
-    setFormState({ ...formState, lineItem: updatedLineItems });
+    setFormState({ ...formState, lineItems: updatedLineItems });
   };
 
   const handleAddLineItem = () => {
@@ -51,8 +57,8 @@ const InvoiceForm = ({ onSave, onCancel }) => {
 
     setFormState({
       ...formState,
-      lineItem: [
-        ...formState.lineItem,
+      lineItems: [
+        ...formState.lineItems,
         { ratePerHour: '', expenses: '' },
       ],
     });
@@ -73,7 +79,7 @@ const InvoiceForm = ({ onSave, onCancel }) => {
       billTo,
       paymentDueDate,
       status,
-      lineItem,
+      lineItems,
       sentTo,
     } = formState;
     if (
@@ -81,7 +87,7 @@ const InvoiceForm = ({ onSave, onCancel }) => {
       billTo === '' ||
       paymentDueDate === '' ||
       status === '' ||
-      lineItem.some(
+      lineItems.some(
         (item) => item.ratePerHour === '' || item.expenses === ''
       ) ||
       !validateEmail(sentTo)
@@ -162,7 +168,7 @@ const InvoiceForm = ({ onSave, onCancel }) => {
 
         <h3>Line Items</h3>
 
-        {formState.lineItem.map((item, index) => (
+        {formState.lineItems.map((item, index) => (
           <div key={index}>
             <label htmlFor={`ratePerHour${index}`}>
               Rate per Hour

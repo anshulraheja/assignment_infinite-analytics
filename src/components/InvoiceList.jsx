@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import InvoiceDetails from './InvoiceForm';
+import InvoiceForm from './InvoiceForm';
 import { v4 as uuidv4 } from 'uuid';
 import mockInvoices from '../../data/mock-data';
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState(mockInvoices);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-  const handleViewInvoice = (invoice) => {};
+  const handleViewInvoice = (invoice) => {
+    setIsModalOpen(true);
+    setSelectedInvoice(invoice);
+  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -69,9 +73,10 @@ const InvoiceList = () => {
 
       {isModalOpen && (
         <Modal>
-          <InvoiceDetails
+          <InvoiceForm
             onSave={handleSaveInvoice}
             onCancel={handleCloseModal}
+            selectedInvoice={selectedInvoice}
           />
         </Modal>
       )}
