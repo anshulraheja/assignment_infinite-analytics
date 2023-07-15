@@ -122,9 +122,6 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
     return pattern.test(email);
   };
 
-  console.log(formState);
-  console.log('isEditMode', isEditMode);
-
   return (
     <div className="invoice-form-wrapper">
       <h2>{isEditMode ? 'Add Invoice' : 'Edit Invoice'}</h2>

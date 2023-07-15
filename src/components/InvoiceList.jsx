@@ -105,11 +105,11 @@ const InvoiceList = () => {
                   </p>
                   <p className="detail">
                     <strong>Sent To</strong>
-                    <span>{invoice.sentTo}</span>
+                    <span className="restrict">{invoice.sentTo}</span>
                   </p>
                   <p className="detail">
                     <strong>Status</strong>
-                    <span>{invoice.status}</span>
+                    <span className="status">{invoice.status}</span>
                   </p>
                   <AiFillEdit
                     className="icon"

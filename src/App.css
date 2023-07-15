@@ -41,7 +41,6 @@ body {
 }
 .invoice-count {
   font-size: 12px;
-  opacity: 0.6;
 }
 .right-header {
   display: flex;
@@ -91,6 +90,10 @@ body {
   border: 1px solid var(--primary-dark-blue);
   border-radius: 0.5rem;
   padding: 0.5rem;
+  overflow: hidden;
+}
+.each-invoice > .detail {
+  flex: 1;
 }
 .each-invoice > strong {
   color: #176b87;
@@ -98,6 +101,15 @@ body {
 .detail {
   display: flex;
   flex-direction: column;
+}
+.restrict {
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.status {
+  text-transform: capitalize;
 }
 .icon {
   height: 25px;
