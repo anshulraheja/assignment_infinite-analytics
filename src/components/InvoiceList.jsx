@@ -8,6 +8,7 @@ const InvoiceList = () => {
   const [invoices, setInvoices] = useState(mockInvoices);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [filterStatus, setFilterStatus] = useState('');
 
   const handleViewInvoice = (invoice) => {
     setIsModalOpen(true);
@@ -32,7 +33,16 @@ const InvoiceList = () => {
 
   const handleNewInvoice = () => {
     setIsModalOpen(true);
+    setSelectedInvoice(null);
   };
+  const handleFilterChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
+  const filteredInvoice = invoices.filter(
+    (invoice) =>
+      filterStatus === '' || invoice.status === filterStatus
+  );
   return (
     <div>
       <h2>Invoice List</h2>
@@ -41,35 +51,55 @@ const InvoiceList = () => {
       {invoices.length === 0 ? (
         <p>No invoices found.</p>
       ) : (
-        <ul>
-          {invoices.map((invoice) => (
-            <li key={invoice.id}>
-              <p>
-                <strong>Invoice Date:</strong> {invoice.invoiceDate}
-              </p>
-              <p>
-                <strong>Bill To:</strong> {invoice.billTo}
-              </p>
-              <p>
-                <strong>Payment Due Date:</strong>{' '}
-                {invoice.paymentDueDate}
-              </p>
-              <p>
-                <strong>Sent To:</strong> {invoice.sentTo}
-              </p>
-              <p>
-                <strong>Status:</strong> {invoice.status}
-              </p>
-              <button onClick={() => handleViewInvoice(invoice)}>
-                View
-              </button>
-              <button onClick={() => handleDeleteInvoice(invoice.id)}>
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <div>
+            <label htmlFor="filter">Filter by status:</label>
+            <select
+              name="filter"
+              id="filter"
+              value={filterStatus}
+              onChange={handleFilterChange}
+            >
+              <option value="">All</option>
+              <option value="paid">Paid</option>
+              <option value="outstanding">Outstanding</option>
+              <option value="late">Late</option>
+            </select>
+          </div>
+          <ul>
+            {filteredInvoice.map((invoice) => (
+              <li key={invoice.id}>
+                <p>
+                  <strong>Invoice Date:</strong> {invoice.invoiceDate}
+                </p>
+                <p>
+                  <strong>Bill To:</strong> {invoice.billTo}
+                </p>
+                <p>
+                  <strong>Payment Due Date:</strong>{' '}
+                  {invoice.paymentDueDate}
+                </p>
+                <p>
+                  <strong>Sent To:</strong> {invoice.sentTo}
+                </p>
+                <p>
+                  <strong>Status:</strong> {invoice.status}
+                </p>
+                <button onClick={() => handleViewInvoice(invoice)}>
+                  View
+                </button>
+                <button
+                  onClick={() => handleDeleteInvoice(invoice.id)}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
+
+      <p>Total invoices: {filteredInvoice.length}</p>
 
       {isModalOpen && (
         <Modal>

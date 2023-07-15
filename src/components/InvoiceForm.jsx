@@ -15,6 +15,10 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
     sentTo: '',
   });
 
+  const [isEditMode, setIsEditMode] = useState(
+    selectedInvoice ? false : true
+  );
+
   useEffect(() => {
     // Set today's date as the default value for invoiceDate
     const today = new Date().toISOString().split('T')[0];
@@ -44,7 +48,7 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
 
   const handleAddLineItem = () => {
     const lastLineItem =
-      formState.lineItem[formState.lineItem.length - 1];
+      formState.lineItems[formState.lineItems.length - 1];
     if (
       lastLineItem.ratePerHour === '' ||
       lastLineItem.expenses === ''
@@ -65,12 +69,13 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
   };
 
   const handleDeleteLineItem = (index) => {
-    const updatedLineItems = [...formState.lineItem];
+    const updatedLineItems = [...formState.lineItems];
     updatedLineItems.splice(index, 1);
-    setFormState({ ...formState, lineItem: updatedLineItems });
+    setFormState({ ...formState, lineItems: updatedLineItems });
   };
 
   const handleSaveInvoice = (e) => {
+    debugger;
     e.preventDefault();
 
     // Perform validation
@@ -103,6 +108,15 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
     onCancel();
   };
 
+  const handleEdit = (e) => {
+    e.preventDefault();
+    setIsEditMode(true);
+  };
+
+  const handleClose = () => {
+    onCancel();
+  };
+
   const validateEmail = (email) => {
     // Use a simple regex pattern to validate the email format
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -110,13 +124,25 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
   };
 
   console.log(formState);
+  console.log('isEditMode', isEditMode);
 
   return (
     <div>
       <form onSubmit={handleSaveInvoice}>
         <div>
-          <button type="submit">Save</button>
-          <button onClick={handleCancel}>Cancel</button>
+          {isEditMode ? (
+            <>
+              <button type="submit">Save</button>
+              <button onClick={handleCancel}>Cancel</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={handleEdit}>
+                Edit
+              </button>
+              <button onClick={handleClose}>Close</button>
+            </>
+          )}
         </div>
         <label htmlFor="date">Invoice Date</label>
         <input
@@ -125,6 +151,7 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
           name="invoiceDate"
           value={formState?.invoiceDate}
           onChange={handleInputChange}
+          disabled={!isEditMode}
         />
         <label htmlFor="billTo">Bill To</label>
         <input
@@ -133,6 +160,7 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
           name="billTo"
           value={formState?.billTo}
           onChange={handleInputChange}
+          disabled={!isEditMode}
         />
         <label htmlFor="paymentDueDate">Payment Due Date</label>
         <input
@@ -141,6 +169,7 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
           name="paymentDueDate"
           value={formState?.paymentDueDate}
           onChange={handleInputChange}
+          disabled={!isEditMode}
         />
         <label htmlFor="status">Status</label>
         <select
@@ -148,6 +177,7 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
           id="status"
           value={formState?.status}
           onChange={handleInputChange}
+          disabled={!isEditMode}
         >
           <option value="" disabled>
             Select a value
@@ -164,6 +194,7 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
           name="sentTo"
           value={formState?.sentTo}
           onChange={handleInputChange}
+          disabled={!isEditMode}
         />
 
         <h3>Line Items</h3>
@@ -179,6 +210,7 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
               name="ratePerHour"
               value={item.ratePerHour}
               onChange={(e) => handleLineItemChange(e, index)}
+              disabled={!isEditMode}
             />
             <label htmlFor={`expenses${index}`}>Expenses</label>
             <input
@@ -188,9 +220,10 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
               min="0"
               value={item.expenses}
               onChange={(e) => handleLineItemChange(e, index)}
+              disabled={!isEditMode}
             />
 
-            {index > 0 && (
+            {index > 0 && isEditMode && (
               <button
                 type="button"
                 onClick={() => handleDeleteLineItem(index)}
@@ -201,11 +234,13 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
           </div>
         ))}
 
-        <div>
-          <button type="button" onClick={handleAddLineItem}>
-            Add line item
-          </button>
-        </div>
+        {isEditMode && (
+          <div>
+            <button type="button" onClick={handleAddLineItem}>
+              Add line item
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );
