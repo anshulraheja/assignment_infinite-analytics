@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Modal from './Modal';
 import InvoiceForm from './InvoiceForm';
 import { v4 as uuidv4 } from 'uuid';
-import mockInvoices from '../../data/mock-data';
+import {
+  addInvoice,
+  deleteInvoice,
+  setFilterStatus,
+} from '../redux/invoice/invoiceSlice';
 
 const InvoiceList = () => {
-  const [invoices, setInvoices] = useState(mockInvoices);
+  const invoices = useSelector((state) => state.invoices.invoices);
+  const filterStatus = useSelector(
+    (state) => state.invoices.filterStatus
+  );
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [filterStatus, setFilterStatus] = useState('');
 
   const handleViewInvoice = (invoice) => {
     setIsModalOpen(true);
@@ -20,29 +28,28 @@ const InvoiceList = () => {
   };
 
   const handleSaveInvoice = (newInvoice) => {
-    setInvoices([...invoices, { ...newInvoice, id: uuidv4() }]);
+    dispatch(addInvoice({ ...newInvoice, id: uuidv4() }));
     handleCloseModal();
   };
 
   const handleDeleteInvoice = (invoiceId) => {
-    const updatedInvoices = invoices.filter(
-      (invoice) => invoice.id !== invoiceId
-    );
-    setInvoices(updatedInvoices);
+    dispatch(deleteInvoice(invoiceId));
   };
 
   const handleNewInvoice = () => {
     setIsModalOpen(true);
     setSelectedInvoice(null);
   };
+
   const handleFilterChange = (e) => {
-    setFilterStatus(e.target.value);
+    dispatch(setFilterStatus(e.target.value));
   };
 
   const filteredInvoice = invoices.filter(
     (invoice) =>
       filterStatus === '' || invoice.status === filterStatus
   );
+
   return (
     <div>
       <h2>Invoice List</h2>
