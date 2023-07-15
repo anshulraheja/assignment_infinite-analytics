@@ -1,10 +1,10 @@
 import React from 'react';
 import InvoiceList from './components/InvoiceList';
+import './App.css';
 
 const App = () => {
   return (
-    <div>
-      <h1>Invoice Application</h1>
+    <div className="container">
       <InvoiceList />
     </div>
   );

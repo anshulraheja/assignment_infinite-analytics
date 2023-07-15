@@ -8,6 +8,7 @@ import {
   deleteInvoice,
   setFilterStatus,
 } from '../redux/invoice/invoiceSlice';
+import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 
 const InvoiceList = () => {
   const invoices = useSelector((state) => state.invoices.invoices);
@@ -51,15 +52,16 @@ const InvoiceList = () => {
   );
 
   return (
-    <div>
-      <h2>Invoice List</h2>
-      <button onClick={handleNewInvoice}>New Invoice</button>
-
-      {invoices.length === 0 ? (
-        <p>No invoices found.</p>
-      ) : (
+    <div className="invoice-list-wrapper">
+      <div className="header-wrapper">
         <div>
-          <div>
+          <h2 className="header">Invoices</h2>
+          <span className="invoice-count">
+            Total invoices: {filteredInvoice.length}
+          </span>
+        </div>
+        <div className="right-header">
+          <div className="filter-wrapper">
             <label htmlFor="filter">Filter by status:</label>
             <select
               name="filter"
@@ -69,44 +71,60 @@ const InvoiceList = () => {
             >
               <option value="">All</option>
               <option value="paid">Paid</option>
-              <option value="outstanding">Outstanding</option>
+              <option value="pending">Pending</option>
               <option value="late">Late</option>
             </select>
           </div>
-          <ul>
-            {filteredInvoice.map((invoice) => (
-              <li key={invoice.id}>
-                <p>
-                  <strong>Invoice Date:</strong> {invoice.invoiceDate}
-                </p>
-                <p>
-                  <strong>Bill To:</strong> {invoice.billTo}
-                </p>
-                <p>
-                  <strong>Payment Due Date:</strong>{' '}
-                  {invoice.paymentDueDate}
-                </p>
-                <p>
-                  <strong>Sent To:</strong> {invoice.sentTo}
-                </p>
-                <p>
-                  <strong>Status:</strong> {invoice.status}
-                </p>
-                <button onClick={() => handleViewInvoice(invoice)}>
-                  View
-                </button>
-                <button
-                  onClick={() => handleDeleteInvoice(invoice.id)}
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
+          <button
+            onClick={handleNewInvoice}
+            className="btn-new-invoice"
+          >
+            New Invoice
+          </button>
         </div>
-      )}
-
-      <p>Total invoices: {filteredInvoice.length}</p>
+      </div>
+      <div className="invoice-list">
+        {invoices.length === 0 ? (
+          <div>No invoices found.</div>
+        ) : (
+          <div>
+            <ul className="all-list">
+              {filteredInvoice.map((invoice) => (
+                <li key={invoice.id} className="each-invoice">
+                  <p className="detail">
+                    <strong>Invoice Date</strong>
+                    <span>{invoice.invoiceDate}</span>
+                  </p>
+                  <p className="detail detail-name">
+                    <strong>Bill To</strong>
+                    <span>{invoice.billTo}</span>
+                  </p>
+                  <p className="detail">
+                    <strong>Due Date</strong>
+                    <span>{invoice.paymentDueDate}</span>
+                  </p>
+                  <p className="detail">
+                    <strong>Sent To</strong>
+                    <span>{invoice.sentTo}</span>
+                  </p>
+                  <p className="detail">
+                    <strong>Status</strong>
+                    <span>{invoice.status}</span>
+                  </p>
+                  <AiFillEdit
+                    className="icon"
+                    onClick={() => handleViewInvoice(invoice)}
+                  />
+                  <AiFillDelete
+                    className="icon"
+                    onClick={() => handleDeleteInvoice(invoice.id)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
 
       {isModalOpen && (
         <Modal>

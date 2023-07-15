@@ -118,7 +118,6 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
   };
 
   const validateEmail = (email) => {
-    // Use a simple regex pattern to validate the email format
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
   };
@@ -127,120 +126,150 @@ const InvoiceForm = ({ onSave, onCancel, selectedInvoice }) => {
   console.log('isEditMode', isEditMode);
 
   return (
-    <div>
+    <div className="invoice-form-wrapper">
+      <h2>{isEditMode ? 'Add Invoice' : 'Edit Invoice'}</h2>
       <form onSubmit={handleSaveInvoice}>
-        <div>
+        <div className="btn-container">
           {isEditMode ? (
             <>
-              <button type="submit">Save</button>
-              <button onClick={handleCancel}>Cancel</button>
+              <button type="submit" className="btn-save">
+                Save
+              </button>
+              <button onClick={handleCancel} className="btn-cancel">
+                Cancel
+              </button>
             </>
           ) : (
             <>
-              <button type="button" onClick={handleEdit}>
+              <button
+                className="btn-save"
+                type="button"
+                onClick={handleEdit}
+              >
                 Edit
               </button>
-              <button onClick={handleClose}>Close</button>
+              <button className="btn-cancel" onClick={handleClose}>
+                Close
+              </button>
             </>
           )}
         </div>
-        <label htmlFor="date">Invoice Date</label>
-        <input
-          id="date"
-          type="date"
-          name="invoiceDate"
-          value={formState?.invoiceDate}
-          onChange={handleInputChange}
-          disabled={!isEditMode}
-        />
-        <label htmlFor="billTo">Bill To</label>
-        <input
-          id="billTo"
-          type="text"
-          name="billTo"
-          value={formState?.billTo}
-          onChange={handleInputChange}
-          disabled={!isEditMode}
-        />
-        <label htmlFor="paymentDueDate">Payment Due Date</label>
-        <input
-          id="paymentDueDate"
-          type="date"
-          name="paymentDueDate"
-          value={formState?.paymentDueDate}
-          onChange={handleInputChange}
-          disabled={!isEditMode}
-        />
-        <label htmlFor="status">Status</label>
-        <select
-          name="status"
-          id="status"
-          value={formState?.status}
-          onChange={handleInputChange}
-          disabled={!isEditMode}
-        >
-          <option value="" disabled>
-            Select a value
-          </option>
-          <option value="paid">Paid</option>
-          <option value="outstanding">Outstanding</option>
-          <option value="late">Late</option>
-        </select>
-
-        <label htmlFor="sentTo">Send To</label>
-        <input
-          id="sentTo"
-          type="email"
-          name="sentTo"
-          value={formState?.sentTo}
-          onChange={handleInputChange}
-          disabled={!isEditMode}
-        />
-
-        <h3>Line Items</h3>
-
-        {formState.lineItems.map((item, index) => (
-          <div key={index}>
-            <label htmlFor={`ratePerHour${index}`}>
-              Rate per Hour
-            </label>
-            <input
-              id={`ratePerHour${index}`}
-              type="text"
-              name="ratePerHour"
-              value={item.ratePerHour}
-              onChange={(e) => handleLineItemChange(e, index)}
-              disabled={!isEditMode}
-            />
-            <label htmlFor={`expenses${index}`}>Expenses</label>
-            <input
-              id={`expenses${index}`}
-              type="number"
-              name="expenses"
-              min="0"
-              value={item.expenses}
-              onChange={(e) => handleLineItemChange(e, index)}
-              disabled={!isEditMode}
-            />
-
-            {index > 0 && isEditMode && (
-              <button
-                type="button"
-                onClick={() => handleDeleteLineItem(index)}
-              >
-                Delete
-              </button>
-            )}
-          </div>
-        ))}
-
-        {isEditMode && (
+        <div className="form-fields">
           <div>
-            <button type="button" onClick={handleAddLineItem}>
-              Add line item
-            </button>
+            <label htmlFor="date">Invoice Date</label>
+            <input
+              id="date"
+              type="date"
+              name="invoiceDate"
+              value={formState?.invoiceDate}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+            />
           </div>
-        )}
+          <div>
+            <label htmlFor="billTo">Bill To</label>
+            <input
+              id="billTo"
+              type="text"
+              name="billTo"
+              value={formState?.billTo}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+            />
+          </div>
+          <div>
+            <label htmlFor="paymentDueDate">Payment Due Date</label>
+            <input
+              id="paymentDueDate"
+              type="date"
+              name="paymentDueDate"
+              value={formState?.paymentDueDate}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+            />
+          </div>
+          <div>
+            <label htmlFor="status">Status</label>
+            <select
+              name="status"
+              id="status"
+              value={formState?.status}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+            >
+              <option value="" disabled>
+                Select a value
+              </option>
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="late">Late</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="sentTo">Send To</label>
+            <input
+              id="sentTo"
+              type="email"
+              name="sentTo"
+              value={formState?.sentTo}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+            />
+          </div>
+        </div>
+        <div className="line-item-wrapper">
+          <h3 className="line-item-header">Line Items</h3>
+          {isEditMode && (
+            <div>
+              <button
+                className="btn-add-item"
+                type="button"
+                onClick={handleAddLineItem}
+              >
+                + Add item
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="item-wrapper">
+          {formState.lineItems.map((item, index) => (
+            <div key={index} className="line-item">
+              <div>
+                <input
+                  id={`ratePerHour${index}`}
+                  placeholder="Rate per Hour"
+                  type="text"
+                  name="ratePerHour"
+                  value={item.ratePerHour}
+                  onChange={(e) => handleLineItemChange(e, index)}
+                  disabled={!isEditMode}
+                />
+              </div>
+              <div>
+                <input
+                  id={`expenses${index}`}
+                  type="number"
+                  name="expenses"
+                  min="0"
+                  placeholder="Expenses"
+                  value={item.expenses}
+                  onChange={(e) => handleLineItemChange(e, index)}
+                  disabled={!isEditMode}
+                />
+              </div>
+              {index > 0 && isEditMode && (
+                <button
+                  className="btn-delete-item"
+                  type="button"
+                  onClick={() => handleDeleteLineItem(index)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
       </form>
     </div>
   );
