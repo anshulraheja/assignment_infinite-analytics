@@ -1,5 +1,5 @@
 import React from 'react';
-import InvoiceList from './components/InvoiceList';
+import InvoiceList from './components/Invoice/InvoiceList';
 import './App.css';
 
 const App = () => {

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Modal from './Modal';
+import Modal from '../Modal/Modal';
 import InvoiceForm from './InvoiceForm';
 import { v4 as uuidv4 } from 'uuid';
 import {
   addInvoice,
   deleteInvoice,
   setFilterStatus,
-} from '../redux/invoice/invoiceSlice';
+} from '../../redux/invoice/invoiceSlice';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
+import './Invoice.css';
 
 const InvoiceList = () => {
   const invoices = useSelector((state) => state.invoices.invoices);
